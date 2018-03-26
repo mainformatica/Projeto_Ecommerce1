@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if(!class_exists('Rain\Tpl')){exit;}?><!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -28,15 +28,29 @@
   <div class="lockscreen-logo">
     <a href="/admin"><b>TicketsShow</b></a>
   </div>
-
-  <!-- /.lockscreen-item -->
-  <div class="help-block text-center">
-    <div class="callout callout-success">
-      <h4>E-mail enviado!</h4>
-
-      <p>Verifique as instruções no seu e-mail.</p>
+  
+   <div class="help-block text-center">
+     Olá <?php echo htmlspecialchars( $name, ENT_COMPAT, 'UTF-8', FALSE ); ?>, digite uma nova senha:
     </div>
+
+  <!-- START LOCK SCREEN ITEM -->
+  <div class="lockscreen-item">
+
+    <!-- lockscreen credentials (contains the form) -->
+    <form  action="/admin/forgot/reset" method="post">
+      <input type="hidden" name="code" value="<?php echo htmlspecialchars( $code, ENT_COMPAT, 'UTF-8', FALSE ); ?>">
+      <div class="input-group">
+        <input type="password" class="form-control" placeholder="Digite a nova senha" name="password">
+        <div class="input-group-btn">
+          <button type="submit" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
+        </div>
+      </div>
+    </form>
+    <!-- /.lockscreen credentials -->
+
   </div>
+  <!-- /.lockscreen-item -->
+  
   <div class="lockscreen-footer text-center">
     Copyright &copy; 2018 <b><a href="http://mainfo.com.br" class="text-black">TicketsShow</a></b><br>
     Todos os direitos reservados.
