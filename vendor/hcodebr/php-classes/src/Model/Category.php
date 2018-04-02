@@ -5,6 +5,8 @@ namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
+use \Hcode\Model\Products;
+
 
 class Category extends Model{
   
@@ -73,6 +75,81 @@ class Category extends Model{
      }
 
      file_put_contents($_SERVER['DOCUMENT_ROOT']. DIRECTORY_SEPARATOR. "views" . DIRECTORY_SEPARATOR. "categories-menu.html", implode('', $html));
+
+  }
+   // mostrar produtos
+  public function getProducts($related = true)
+  {
+
+     $sql = new Sql();
+
+     if ($related === true) {
+
+          return $sql->select("SELECT * FROM tb_products WHERE idproduct IN(SELECT a.idproduct FROM tb_products a INNER JOIN tb_productscategories b ON a.idproduct = b.idproduct WHERE b.idcategory = :idcategory
+            );"
+              , [
+                ':idcategory'=>$this->getidcategory()
+              ]);
+
+     } else {
+
+           return $sql->select("SELECT * FROM tb_products WHERE idproduct NOT IN(SELECT a.idproduct FROM tb_products a INNER JOIN tb_productscategories b ON a.idproduct = b.idproduct WHERE b.idcategory = :idcategory
+            );"
+            , [
+                ':idcategory'=>$this->getidcategory()
+              ]);
+
+     }
+
+  }  
+     //Paginação da categoria / quantidade de produtos por pagina. 
+  public function getProductsPage($page = 1, $itemsPerPage = 3)
+  {
+     $start = ($page-1)*$itemsPerPage;
+
+     $sql = new Sql();
+
+       $results = $sql->select("SELECT SQL_CALC_FOUND_ROWS *
+       FROM tb_products a
+       INNER JOIN tb_productscategories b ON a.idproduct = b.idproduct
+       INNER JOIN tb_categories c ON c.idcategory = b.idcategory
+       WHERE c.idcategory = :idcategory 
+       LIMIT $start, $itemsPerPage;", [
+        ':idcategory'=>$this->getidcategory()
+       ]);
+       
+       $resultTotal = $sql->select("SELECT FOUND_ROWS() AS nrtotal; ");
+
+     return [
+              'data'=>Products::checkList($results),
+              'total'=>(int)$resultTotal[0]["nrtotal"],
+              'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage)
+     ];
+    
+  }
+   // adicionar produtos a categoria
+  public function addProduct (Products $products)
+  {
+    
+     $sql = new Sql();
+
+     $sql->query("INSERT INTO tb_productscategories (idcategory, idproduct) VALUES (:idcategory, :idproduct)", [
+      ':idcategory'=>$this->getidcategory(),
+      ':idproduct'=>$products->getidproduct()
+
+   ]);
+
+  }
+   // remover produtos da categoria
+  public function removeProduct(Products $products)
+  {
+     $sql = new Sql();
+
+     $sql->query("DELETE FROM tb_productscategories WHERE idcategory = :idcategory AND idproduct = :idproduct", [
+      ':idcategory'=>$this->getidcategory(),
+      ':idproduct'=>$products->getidproduct()
+
+   ]);
 
   }
  
