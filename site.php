@@ -1,9 +1,11 @@
 <?php
 
-use \Hcode\PageAdmin;
+
 use \Hcode\Page;
 use \Hcode\Model\Products;
-use \Hcode\model\Category;
+use \Hcode\Model\Category;
+use \Hcode\Model\Cart;
+use \Hcode\Model\User;
 
 //Rota da Home do site
 $app->get('/', function() {
@@ -45,6 +47,32 @@ $app->get('/', function() {
             ]);
 
 });
+
+ $app->get("/products/:desurl", function($desurl){
+
+ $products = new Products();
+
+ $products->getFromURL($desurl);
+
+ $page = new Page();
+
+$page->setTpl("product-detail", [
+    'products'=>$products->getValues(),
+    'categories'=>$products->getcategories()
+]);
+
+ });
+
+    $app->get("/cart", function(){
+
+    $cart = Cart::getFromSession();
+
+    
+    $page = new Page();
+
+    $page ->setTpl("cart");
+
+ });
 
 ?>
 

@@ -5,11 +5,58 @@ namespace Hcode\Model;
 use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
+use \Hcode\Model\Cart;
 
 class user extends Model{
 
 	const SESSION = "User";
   const SECRET = "MainFo_753951120";
+
+  public static function getFromSession()
+  {
+         $user = new User();
+
+     if (isset($_SESSION[User::SESSION] ) &&  (int)$_SESSION[User::SESSION]['iduser'] > 0) {
+               
+         $user->setData($_SESSION[User::SESSION]);
+
+     }
+
+     return $user;
+
+  }
+
+  public static function checkLogin($inadmin = true) // verifica se usuario esta logado e como esta logoado
+  {
+      if (
+           !isset($_SESSION[User::SESSION])                              //Verifica a sessão foi definada
+           ||
+           !$_SESSION[User::SESSION]                                     //Verifica a sessão esta vazia
+           ||
+           !(int)$_SESSION[User::SESSION]["iduser"] > 0                 // verifica se é admin
+
+      ){//Usuario  Não esta logado
+             
+             return false;
+
+      }else{
+               
+            if ($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true) {
+                 
+                 return true;
+
+                }else if ($inadmin === false) {
+
+                      return true;
+
+                } else{
+
+                  return false;
+                }  
+
+      }
+
+  }
 	
 	public static function login($login, $password)                          //Tela de login
 	{
@@ -39,7 +86,9 @@ class user extends Model{
        
 
        }else {
+
          throw new \Exception("Usuário ou senha invalido.");
+
          }
 
 	}
@@ -47,18 +96,9 @@ class user extends Model{
 	public static function verifyLogin($inadmin = true)
 	{
 
-      if(
-           !isset($_SESSION[User::SESSION])                              //Verifica a sessão foi definada
-           ||
-           !$_SESSION[User::SESSION]
-           ||
-           !(int)$_SESSION[User::SESSION]["iduser"] > 0                 //verifica se o id de usuario é valido
-           ||
-           (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin       //Verifica se o usuario é admin
-      ){
+      if (!User::checkLogin($inadmin)) {
 
-
-        header("Location: /admin/login"); //redireciona para a tela de login
+            header("Location: /admin/login"); //redireciona para a tela de login
          exit;
       }
 
