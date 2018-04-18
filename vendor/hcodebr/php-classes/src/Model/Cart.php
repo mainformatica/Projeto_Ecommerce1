@@ -86,7 +86,7 @@ const SESSION = "Cart";
 
   }
 
-  public static function save() // salvar no carrinho
+  public function save() // salvar no carrinho
   {
 
     $sql = new Sql();
