@@ -1,12 +1,10 @@
 <?php
 
-
 use \Hcode\Page;
 use \Hcode\Model\Products;
 use \Hcode\Model\Category;
 use \Hcode\Model\Cart;
 use \Hcode\Model\User;
-
 //Rota da Home do site
 $app->get('/', function() {
 
@@ -45,7 +43,6 @@ $app->get('/', function() {
             'products'=>$pagination["data"],
             'pages'=>$pages
             ]);
-
 });
 
  $app->get("/products/:desurl", function($desurl){
@@ -70,9 +67,58 @@ $page->setTpl("product-detail", [
     
     $page = new Page();
 
-    $page ->setTpl("cart");
+    $page ->setTpl("/cart", [
+     'cart'=>$cart->getValues(),
+     'products'=>$cart->getProducts()
+    ]); 
 
  });
 
+    $app->get("/cart/:idproduct/add", function($idproduct){
+
+        $products = new Products();
+
+        $products->get((int)$idproduct);
+
+        $cart = Cart::getFromSession();
+
+        $qtd= (isset($_GET['qtd'])) ? (int)$_GET['qtd'] :1;
+
+        for ($i=0; $i < $qtd; $i++) { 
+
+          $cart->addProduct($products);
+        }     
+
+       header("Location: /cart");
+        exit;
+    });
+
+    $app->get("/cart/:idproduct/minus", function($idproduct){
+
+        $products = new Products();
+
+        $products->get((int)$idproduct);
+
+        $cart = Cart::getFromSession();
+
+        $cart->removeProduct($products);
+
+        header("Location: /cart");
+        exit;
+    });
+
+    $app->get("/cart/:idproduct/remove", function($idproduct){
+
+        $products = new Products();
+
+        $products->get((int)$idproduct);
+
+        $cart = Cart::getFromSession();
+
+        $cart->removeProduct($products, true);
+
+        header("Location: /cart");
+        exit;
+    });
 ?>
 
