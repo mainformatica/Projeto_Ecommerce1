@@ -21,10 +21,10 @@
 
                         <form action="/checkout">
 
-                            {if="$error != ''"}
+                            {if="$error !=''"}
                             
                             <div class="alert alert-danger" role="alert">
-                            {error}
+                            {$error}
                             </div>
                              {/if}
                             <table cellspacing="0" class="shop_table cart">

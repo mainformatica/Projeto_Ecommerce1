@@ -11,6 +11,8 @@ class user extends Model{
 
 	const SESSION = "User";
   const SECRET = "MainFo_753951120";
+  const ERROR = "UserError";
+  const ERROR_REGISTER = "UserErrorRegister";
 
   public static function getFromSession()
   {
@@ -39,7 +41,7 @@ class user extends Model{
              
              return false;
 
-      }else{
+      } else {
                
             if ($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true) {
                  
@@ -49,7 +51,7 @@ class user extends Model{
 
                       return true;
 
-                } else{
+                } else {
 
                   return false;
                 }  
@@ -63,7 +65,7 @@ class user extends Model{
 
 		$sql = new Sql();
          
-        $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
+        $results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b ON a.idperson = b.idperson WHERE a.deslogin = :LOGIN", array(
         ":LOGIN"=>$login
         ));
 
@@ -78,6 +80,8 @@ class user extends Model{
        {
 
          $user = new User();
+
+         $data['desperson'] = utf8_encode($data['desperson']);
 
          $user->setData($data);
 
@@ -98,10 +102,15 @@ class user extends Model{
 
       if (!User::checkLogin($inadmin)) {
 
-            header("Location: /admin/login"); //redireciona para a tela de login
-         exit;
-      }
+           if ($inadmin) {
+              header("Location: /admin/login"); //redireciona para a tela de login
+            } else {
 
+            header("Location: /login");
+      }
+        exit;
+      } 
+      
 	}
 
 	public static function logout()    //Destroi a sessão e vai para tela de login
@@ -126,9 +135,9 @@ class user extends Model{
     $sql = new Sql();
 
     $results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array( 
-      ":desperson"=>$this->getdesperson(),
+      ":desperson"=>utf8_decode($this->getdesperson()),
       ":deslogin"=>$this->getdeslogin(),
-      ":despassword"=>$this->getdespassword(),
+      ":despassword"=>User::getPasswordHash($this->getdespassword()),
       ":desemail"=>$this->getdesemail(),
       ":nrphone"=>$this->getnrphone(),
       ":inadmin"=>$this->getinadmin()
@@ -146,6 +155,10 @@ $results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(
      "iduser"=>$iduser
 
 ));
+ 
+ $data = $results[0];
+
+ $data['desperson'] = utf8_encode($data['desperson']);
 
 $this->setData($results[0]);
 
@@ -158,9 +171,9 @@ $this->setData($results[0]);
 
     $results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array( 
       ":iduser"=>$this->getiduser(),
-      ":desperson"=>$this->getdesperson(),
+      ":desperson"=>utf8_decode($this->getdesperson()),
       ":deslogin"=>$this->getdeslogin(),
-      ":despassword"=>$this->getdespassword(),
+      ":despassword"=>($this->getdespassword()),
       ":desemail"=>$this->getdesemail(),
       ":nrphone"=>$this->getnrphone(),
       ":inadmin"=>$this->getinadmin()
@@ -282,6 +295,43 @@ $this->setData($results[0]);
        ":iduser"=>$this->getiduser()
 
       ));
+
+  }
+
+  public static function setError($msg){
+
+    $_SESSION[User::ERROR] = $msg;
+  }
+
+  public static function getError(){
+
+    $msg=(isset($_SESSION[User::ERROR]) && $_SESSION[User::ERROR]) ?$_SESSION[User::ERROR] : '';
+
+    User::clearError();
+
+    return $msg;
+
+  }
+
+  public static function clearError(){
+
+    $_SESSION[User::ERROR] = NULL;
+  }
+
+  public static function setErrorRegister($msg){
+
+   $_SESSION[User::ERRROR_REGISTER] = $msg;
+
+  }
+
+  public static function getPasswordHash($password)
+  {   
+
+    return password_hash($password, PASSWORD_DEFAULT, [
+     'coast'=>12
+    ]);
+
+
 
   }
 
