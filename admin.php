@@ -2,7 +2,7 @@
 
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
-use \Hcode\model\Product;
+use \Hcode\Model\Product;
 
 //Rota para Home de administração do Site
 $app->get('/admin', function() {
@@ -116,4 +116,3 @@ $app->post("/admin/forgot/reset", function(){
 
 
 ?>
-

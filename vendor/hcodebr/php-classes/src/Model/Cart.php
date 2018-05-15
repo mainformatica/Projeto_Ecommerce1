@@ -7,6 +7,7 @@ use \Hcode\Model;
 use \Hcode\Mailer;
 use \Hcode\Model\User;
 use \Hcode\Model\Products;
+use \Hcode\Model\Address;
 
 class Cart extends Model{
 

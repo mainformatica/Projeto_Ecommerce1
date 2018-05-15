@@ -3,7 +3,7 @@
 use \Hcode\PageAdmin;
 use \Hcode\Page;
 use \Hcode\Model\User;
-use \Hcode\model\Category;
+use \Hcode\Model\Category;
 use \Hcode\Model\Products;
 
 //rota para categorias

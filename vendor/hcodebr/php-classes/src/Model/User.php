@@ -6,6 +6,7 @@ use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
 use \Hcode\Model\Cart;
+use \Hcode\Model\Address;
 
 class user extends Model{
 
@@ -13,6 +14,8 @@ class user extends Model{
   const SECRET = "MainFo_753951120";
   const ERROR = "UserError";
   const ERROR_REGISTER = "UserErrorRegister";
+  const SUCESS = "UserSucess";
+
 
   public static function getFromSession()
   {
@@ -193,7 +196,7 @@ $this->setData($results[0]);
 
     ));
   }
-
+      //Esqueci  a senha 
   public static function getForgot($email, $inadmin = true)
 {
      $sql = new Sql();
@@ -318,6 +321,26 @@ $this->setData($results[0]);
     $_SESSION[User::ERROR] = NULL;
   }
 
+  public static function setSucess($msg){
+
+    $_SESSION[User::SUCESS] = $msg;
+  }
+
+  public static function getSucess(){
+
+    $msg=(isset($_SESSION[User::SUCESS]) && $_SESSION[User::SUCESS]) ?$_SESSION[User::SUCESS] : '';
+
+    User::clearSucess();
+
+    return $msg;
+
+  }
+
+  public static function clearSucess(){
+
+    $_SESSION[User::SUCESS] = NULL;
+  }
+
   public static function setErrorRegister($msg){
 
    $_SESSION[User::ERRROR_REGISTER] = $msg;
@@ -331,7 +354,41 @@ $this->setData($results[0]);
      'coast'=>12
     ]);
 
+  }
 
+  public static function setRegisterError($msg)
+  {
+     $_SESSION[User::ERROR_REGISTER] =$msg;
+   
+  }
+
+  public static function getRegisterError()
+  {
+     $msg = (isset($_SESSION[User::ERROR_REGISTER]) && $_SESSION[User::ERROR_REGISTER]) ? $_SESSION[User::ERROR_REGISTER] : '';
+
+     User::clearRegisterError();
+
+     return $msg;
+
+  }
+
+  public static function clearRegisterError()
+  {
+
+    $_SESSION[User::ERROR_REGISTER] = NULL;
+
+  }
+
+  public static function checkLoginExiste($login)
+  {
+     $sql = new Sql();
+
+     $results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+
+         ':deslogin'=>$login
+     ]);
+
+     return (count($results) > 0);
 
   }
 
