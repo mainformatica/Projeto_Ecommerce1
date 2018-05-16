@@ -217,7 +217,7 @@ const SESSION_ERROR = "CartError";
 
       if ($result->MsgErro != '') {
        
-       Cart::setMsgErro($result->MsgErro);
+       Cart::setMsgErro((string)$result->MsgErro);
 
 
       } else

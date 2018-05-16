@@ -13,12 +13,11 @@ class Sql {
 
 	public function __construct()
 	{
-
-		$this->conn = new \PDO(
-			"mysql:dbname=".Sql::DBNAME.";host=".Sql::HOSTNAME, 
-			Sql::USERNAME,
-			Sql::PASSWORD
-		);
+        $this->conn = new \PDO( "mysql:dbname=".Sql::DBNAME.";host=".Sql::HOSTNAME, Sql::USERNAME, Sql::PASSWORD, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		//$this->conn = new \PDO(
+			//"mysql:dbname=".Sql::DBNAME.";host=".Sql::HOSTNAME, 
+			//Sql::USERNAME,
+			//Sql::PASSWORD);
 
 	}
 
