@@ -1,13 +1,13 @@
 <?php if(!class_exists('Rain\Tpl')){exit;}?><!DOCTYPE html>
 <!--
-    Hcode Store by hcode.com.br
+    M.A Store by mainfo.com.br
 -->
 <html lang="pt-br">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TicketsShow</title>
+    <title>M.A Informática Store</title>
     
     <!-- Google Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,700,600' rel='stylesheet' type='text/css'>
@@ -93,7 +93,7 @@
                 
                 <div class="col-sm-6">
                     <div class="shopping-item">
-                        <a href="/cart">Carrinho - <span class="cart-amunt">R$1000</span> <i class="fa fa-shopping-cart"></i> <span class="product-count">1</span></a>
+                        <a href="/cart">Carrinho - <span class="cart-amunt">R$ <?php echo getCartVlSubTotal(); ?></span> <i class="fa fa-shopping-cart"></i> <span class="product-count"><?php echo getCartNrQtd(); ?></span></a>
                     </div>
                 </div>
             </div>

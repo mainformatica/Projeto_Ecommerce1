@@ -4,12 +4,12 @@
             <div class="row">
                 <div class="col-md-3 col-sm-6">
                     <div class="footer-about-us">
-                        <h2>TicketsShow</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis sunt id doloribus vero quam laborum quas alias dolores blanditiis iusto consequatur, modi aliquid eveniet eligendi iure eaque ipsam iste, pariatur omnis sint! Suscipit, debitis, quisquam. Laborum commodi veritatis magni at?</p>
+                        <h2>M.A Informática Store</h2>
+                        <p>Entre em contato para adquirir sua loja virtual.</p>
                         <div class="footer-social">
-                            <a href="https://www.facebook.com/hcodebr" target="_blank"><i class="fa fa-facebook"></i></a>
-                            <a href="https://twitter.com/hcodebr" target="_blank"><i class="fa fa-twitter"></i></a>
-                            <a href="https://www.youtube.com/channel/UCjWENuSH2gX55-y7QSZiWxA" target="_blank"><i class="fa fa-youtube"></i></a>
+                            <a href="https://www.facebook.com/MAInformaticasolucoes" target="_blank"><i class="fa fa-facebook"></i></a>
+                            <a href="https://twitter.com/m_ainfo" target="_blank"><i class="fa fa-twitter"></i></a>
+                            <!--<a href="https://www.youtube.com/channel/UCjWENuSH2gX55-y7QSZiWxA" target="_blank"><i class="fa fa-youtube"></i></a>-->
                         </div>
                     </div>
                 </div>
@@ -18,7 +18,7 @@
                     <div class="footer-menu">
                         <h2 class="footer-wid-title">Navegação </h2>
                         <ul>
-                            <li><a href="#">Minha Conta</a></li>
+                            <li><a href="/profile">Minha Conta</a></li>
                             <li><a href="#">Meus Pedidos</a></li>
                             <li><a href="#">Lista de Desejos</a></li>
                         </ul>                        
@@ -40,8 +40,8 @@
                 
                 <div class="col-md-3 col-sm-6">
                     <div class="footer-newsletter">
-                        <h2 class="footer-wid-title">Newsletter</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis sunt id doloribus!</p>
+                        <h2 class="footer-wid-title">Noticias</h2>
+                        <p>Cadastre-se para receber nossas promoções!</p>
                         <div class="newsletter-form">
                             <form action="#">
                                 <input type="email" placeholder="Type your email">
@@ -59,16 +59,17 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="copyright">
-                        <p>&copy; 2017 TicketsShow. <a href="http://www.mainfo.com.br" target="_blank">mainfo.com.br</a></p>
+                        <p>&copy; 2018 M.A Informática. <a href="http://www.mainfo.com.br" target="_blank">mainfo.com.br</a></p>
                     </div>
                 </div>
                 
                 <div class="col-md-4">
                     <div class="footer-card-icon">
-                        <i class="fa fa-cc-discover"></i>
+                        <!--<i class="fa fa-cc-discover"></i>-->
                         <i class="fa fa-cc-mastercard"></i>
                         <i class="fa fa-cc-paypal"></i>
                         <i class="fa fa-cc-visa"></i>
+                        <i class="fa fa-cc-pagseguro"></i>
                     </div>
                 </div>
             </div>

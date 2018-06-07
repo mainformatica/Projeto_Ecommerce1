@@ -60,8 +60,13 @@ const SESSION_ERROR = "CartError";
     
     $_SESSION[Cart::SESSION] = $this->getValues();
 
-
   }
+
+  public function removeSession()
+{
+     $_SESSION[Cart::SESSION] = NULL;
+     session_regenerate_id();
+}
 
   public function getFromSessionID()
   {

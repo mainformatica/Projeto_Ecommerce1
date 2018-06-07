@@ -1,12 +1,20 @@
 <?php
 
 use \Hcode\Model\User;
+use \Hcode\Model\Cart;
 
 function formatPrice( $vlprice)
 {
      if (!$vlprice > 0)$vlprice = 0;   //trata o erro do carrinho quando esta zerado
 
 	return number_format($vlprice, 2 ,",", ".");
+}
+
+function formatDate($date)
+{
+
+	return date('d/m/Y', strtotime($date));
+	
 }
 
 function checkLogin($inadmin = true)
@@ -23,5 +31,27 @@ function getUserName()
 	return $user->getdesperson();
 }
 
+function getCartNrQtd()
+{
+
+
+	$cart = Cart::getFromSession();
+
+	$toltals = $cart->getProductsTotal();
+
+	return $toltals['nrqtd'];
+
+}
+
+function getCartVlSubTotal()
+{
+
+	$cart = Cart::getFromSession();
+
+	$toltals = $cart->getProductsTotal();
+
+	return formatPrice($toltals['vlprice']);
+
+}
 
 ?>

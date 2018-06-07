@@ -1,0 +1,138 @@
+<?php
+
+use \Hcode\PageAdmin;
+use \Hcode\Model\User;
+use \Hcode\Model\Order;
+use \Hcode\Model\cart;
+use \Hcode\Model\Orderstatus;
+
+$app->get("/admin/pedidos/:idorder/status", function($idorder){
+    
+    User::verifyLogin();
+
+    $order = new Order();
+
+    $order->get((int)$idorder);
+
+    $page = new PageAdmin();
+
+    $page->setTpl("pedidostatus", [
+
+    	'order'=>$order->getValues(),
+    	'status'=>OrderStatus::listAll(),
+    	'msgSuccess'=>Order::getSuccess(),
+    	'msgError'=>Order::getError()
+
+    ]);
+     	
+});
+
+$app->post("/admin/pedidos/:idorder/status", function($idorder){
+    
+    User::verifyLogin();
+
+    if (!isset($_POST['idstatus']) || !(int)$_POST['idstatus'] > 0){
+
+    	Order::setError("Informe o status atual do pedido.");
+    	header("Location: /admin/pedidos/" .$idorder. "/status ");
+    	exit;
+    }
+
+    $order = new Order();
+
+    $order->get((int)$idorder);
+
+    $order->setidstatus((int)$_POST['idstatus']);
+
+    $order->save();
+
+    Order::setSuccess("Status atualizado com sucesso.");
+
+    header("Location: /admin/pedidos/" .$idorder. "/status ");
+    exit;
+});
+
+$app->get("/admin/pedidos/:idorder/delete", function($idorder){
+
+   User::verifyLogin();
+
+   $order = new Order();
+
+   $order->get((int)$idorder);
+
+   $order->delete();
+
+   header("Location: /admin/pedidos");
+   exit;
+
+
+});
+
+$app->get("/admin/pedidos/:idorder", function($idorder){
+
+	User::verifyLogin();
+
+	$order = new Order();
+
+	$order->get((int)$idorder);
+
+	$cart = $order->getCart();
+
+	$page = new PageAdmin();
+
+	$page->setTpl("pedido", [
+     'order'=>$order->getValues(),
+     'cart'=>$cart->getValues(),
+     'products'=>$cart->getProducts()
+	]);
+
+
+});
+
+$app->get("/admin/pedidos", function(){
+
+   User::verifyLogin();
+
+    $search = (isset($_GET['search'])) ? $_GET['search'] : "";
+
+    $page = (isset($_GET['page'])) ? (int)$_GET['page'] :1;
+
+    if ($search != '') {
+       
+       $paginacao = Order::getPageSearch($search, $page);
+
+     }else {
+
+     $paginacao = Order::getPage($page);
+
+    }
+
+    $pages = [];
+
+    for ($x = 0; $x < $paginacao['pages']; $x++)
+    {
+
+        array_push($pages, [
+            'href'=>'/admin/pedidos'. http_build_query([
+                 'page'=>$x + 1,
+                 'search'=>$search
+            ]),
+            'text'=>$x + 1
+        ]);
+    }
+
+    $page = new PageAdmin();
+
+    $page->setTpl("pedidos", [
+         
+         "orders"=>$paginacao['data'],
+         "search"=>$search,
+         "pages"=>$pages
+
+    ]);
+
+});
+
+
+
+?>

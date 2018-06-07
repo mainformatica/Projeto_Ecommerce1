@@ -254,10 +254,79 @@ $page->setTpl("product-detail", [
            
            $order->save();
 
-         header("Location: /order/".$order->getidorder());
-         exit;
+           $cart->removeSession();//destroi o carrinho depois de finalizar a compra
+
+           switch ((int)$_POST['metodo-pagamento']) {
+              case 1:
+               header("Location: /order/".$order->getidorder(). "/boleto");
+                break;
+
+                case 2:
+               header("Location: /order/".$order->getidorder(). "/pagseguro");
+                break;
+
+                case 3:
+               header("Location: /order/".$order->getidorder(). "/paypal");
+                break;
+            } 
+            exit;
 
     });
+
+   $app->get("/order/:idorder/pagseguro", function($idorder){
+
+
+      User::verifyLogin(false);
+
+      $order = new Order();
+
+      $order->get((int)$idorder);
+
+      $cart = $order->getCart();
+
+      $page = new Page([
+             'header'=>false,
+             'footer'=>false
+      ]);
+      
+      $page->setTpl("pgto-pagseguro", [
+
+        'order'=>$order->getValues(),   //Dados do pedido
+        'cart'=>$cart->getValues(),     //Dados do carrinho
+        'products'=>$cart->getProducts(),  //Dados dos produtos dentro co carrinho
+        'phone'=>[
+            'areaCode'=>substr($order->getnrphone(), 0, 2),
+            'number'=>substr($order->getnrphone(), 2, strlen($order->getnrphone()))
+        ]
+      ]);
+
+   });
+
+   $app->get("/order/:idorder/paypal", function($idorder){
+
+
+      User::verifyLogin(false);
+
+      $order = new Order();
+
+      $order->get((int)$idorder);
+
+      $cart = $order->getCart();
+
+      $page = new Page([
+             'header'=>false,
+             'footer'=>false
+      ]);
+      
+      $page->setTpl("pgto-paypal", [
+
+        'order'=>$order->getValues(),   //Dados do pedido
+        'cart'=>$cart->getValues(),     //Dados do carrinho
+        'products'=>$cart->getProducts(),  //Dados dos produtos dentro co carrinho
+        
+      ]);
+
+   });
 
     $app->get("/login", function(){
 
@@ -283,9 +352,8 @@ $page->setTpl("product-detail", [
                 
             }      
 
-       header("Location: /checkout");
-
-        exit;
+      header('Location: /');
+      exit;
 
   });
 
@@ -495,8 +563,8 @@ $app->get("/order/:idorder", function($idorder){ //gerando pagamento
 
 });
 
-$app->get("/boleto/:idorder", function($idorder){
-
+$app->get("/order/:idorder/boleto", function($idorder){
+//$app->get("/boleto/:idorder", function($idorder)
   User::verifyLogin(false);
 
   $order = new Order();
@@ -530,7 +598,7 @@ $dadosboleto["demonstrativo1"] = "Pagamento de Compra na Loja M.A Informática E
 $dadosboleto["demonstrativo2"] = "Taxa bancária - R$ 0,00";
 $dadosboleto["demonstrativo3"] = "(SEM VALOR APENAS DIDATICO)";
 $dadosboleto["instrucoes1"] = "- Sr. Caixa, cobrar multa de 2% após o vencimento";
-$dadosboleto["instrucoes2"] = "- Receber até 10 dias após o vencimento. (sem Valor Apenas didatico)";
+$dadosboleto["instrucoes2"] = "- Receber até 10 dias após o vencimento. (SEM VALOR APENAS DIDATICO)";
 $dadosboleto["instrucoes3"] = "- Em caso de dúvidas entre em contato conosco: contato@mainfo.com.br";
 $dadosboleto["instrucoes4"] = "&nbsp; Emitido pelo sistema Projeto Loja Mainformática E-commerce - www.loja.mainfo.com.br";
 
@@ -546,17 +614,17 @@ $dadosboleto["especie_doc"] = "";
 
 
 // DADOS DA SUA CONTA - ITAÚ
-$dadosboleto["agencia"] = "0067"; // Num da agencia, sem digito
-$dadosboleto["conta"] = "61773";  // Num da conta, sem digito
-$dadosboleto["conta_dv"] = "8";   // Digito do Num da conta
+$dadosboleto["agencia"] = "XXXX"; // Num da agencia, sem digito
+$dadosboleto["conta"] = "XXXXX";  // Num da conta, sem digito
+$dadosboleto["conta_dv"] = "X";   // Digito do Num da conta
 
 // DADOS PERSONALIZADOS - ITAÚ
 $dadosboleto["carteira"] = "175";  // Código da Carteira: pode ser 175, 174, 104, 109, 178, ou 157
 
 // SEUS DADOS
 $dadosboleto["identificacao"] = "M.A Informatica";
-$dadosboleto["cpf_cnpj"] = "05.877.306/0001-44";
-$dadosboleto["endereco"] = "Rua Paraopeba, 526 - JD> Tijuco, 09932-080";
+$dadosboleto["cpf_cnpj"] = "XX.XXX.XXX/0000-XX";
+$dadosboleto["endereco"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 $dadosboleto["cidade_uf"] = "Dadema - SP";
 $dadosboleto["cedente"] = "M.A Informática - ME";
 
@@ -599,6 +667,7 @@ $app->get("/profile/orders/:idorder", function($idorder){
   $cart->getCalculeteTotal();
 
   $page = new Page();
+
 
   $page->setTpl("detalhespedido", [
 
@@ -676,6 +745,5 @@ $app->post("/profile/alterarsenha", function(){
       exit;
 
 });
-
 
 ?>
